@@ -179,6 +179,7 @@ class ContactApp {
     private contactCountElement: HTMLElement;
     private noContactsElement: HTMLElement;
     private currentView: 'grid' | 'list' = 'grid';
+    private currentContactToDelete: string = '';
 
     constructor() {
         this.contactManager = new ContactManager();
@@ -214,6 +215,16 @@ class ContactApp {
         document.getElementById('grid-view')?.addEventListener('click', () => this.setView('grid'));
         document.getElementById('list-view')?.addEventListener('click', () => this.setView('list'));
         
+        document.getElementById('confirm-delete')?.addEventListener('click', () => this.confirmDelete());
+        document.getElementById('cancel-delete')?.addEventListener('click', () => this.closeConfirmationModal());
+        
+        window.addEventListener('click', (event) => {
+            const modal = document.getElementById('confirmation-modal') as HTMLElement;
+            if (event.target === modal) {
+                this.closeConfirmationModal();
+            }
+        });
+        
         console.log('Event listeners initialized');
     }
 
@@ -229,6 +240,13 @@ class ContactApp {
         
         console.log('Adding new contact:', newContact);
         this.contactManager.addContact(newContact);
+        
+        this.showNotification(
+            'success', 
+            'Contact Added', 
+            `${newContact.name} has been added to your contacts.`
+        );
+        
         this.resetForm();
         this.renderContactList();
     }
@@ -242,7 +260,16 @@ class ContactApp {
         };
         
         console.log('Updating contact:', updatedContact);
-        this.contactManager.updateContact(updatedContact);
+        const success = this.contactManager.updateContact(updatedContact);
+        
+        if (success) {
+            this.showNotification(
+                'success', 
+                'Contact Updated', 
+                `${updatedContact.name}'s information has been updated.`
+            );
+        }
+        
         this.resetForm();
         this.renderContactList();
     }
@@ -263,10 +290,19 @@ class ContactApp {
     }
 
     private handleDeleteContact(id: string): void {
-        if (confirm('Are you sure you want to delete this contact?')) {
-            console.log('Deleting contact:', id);
-            this.contactManager.deleteContact(id);
-            this.renderContactList();
+        const contact = this.contactManager.getContact(id);
+        if (!contact) return;
+
+        this.currentContactToDelete = id;
+        
+        const contactToDeleteElement = document.querySelector('.contact-to-delete') as HTMLElement;
+        if (contactToDeleteElement) {
+            contactToDeleteElement.textContent = `${contact.name} (${contact.email})`;
+        }
+        
+        const modal = document.getElementById('confirmation-modal') as HTMLElement;
+        if (modal) {
+            modal.style.display = 'block';
         }
     }
 
@@ -392,6 +428,84 @@ class ContactApp {
             .toUpperCase()
             .substring(0, 2);
     }
+
+    private confirmDelete(): void {
+        if (this.currentContactToDelete) {
+            const contact = this.contactManager.getContact(this.currentContactToDelete);
+            const contactName = contact ? contact.name : 'Contact';
+            
+            const success = this.contactManager.deleteContact(this.currentContactToDelete);
+            if (success) {
+                this.showNotification(
+                    'success', 
+                    'Contact Deleted', 
+                    `${contactName} has been removed from your contacts.`
+                );
+            }
+            
+            this.currentContactToDelete = '';
+            this.closeConfirmationModal();
+            this.renderContactList();
+        }
+    }
+
+    private closeConfirmationModal(): void {
+        const modal = document.getElementById('confirmation-modal') as HTMLElement;
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    private showNotification(type: 'success' | 'error', title: string, message: string): void {
+        const container = document.getElementById('notification-container');
+        if (!container) {
+            console.error('Notification container not found');
+            return;
+        }
+        
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        
+        const iconName = type === 'success' ? 'checkmark-circle' : 'alert-circle';
+        
+        notification.innerHTML = `
+            <div class="notification-icon">
+                <ion-icon name="${iconName}"></ion-icon>
+            </div>
+            <div class="notification-content">
+                <div class="notification-title">${title}</div>
+                <div class="notification-message">${message}</div>
+            </div>
+            <div class="notification-close">
+                <ion-icon name="close"></ion-icon>
+            </div>
+        `;
+        
+        container.appendChild(notification);
+        
+        const closeBtn = notification.querySelector('.notification-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                notification.style.animation = 'slideOutRight 0.3s forwards';
+                setTimeout(() => {
+                    if (notification.parentNode === container) {
+                        container.removeChild(notification);
+                    }
+                }, 300);
+            });
+        }
+        
+        setTimeout(() => {
+            if (notification.parentNode === container) {
+                notification.style.animation = 'slideOutRight 0.3s forwards';
+                setTimeout(() => {
+                    if (notification.parentNode === container) {
+                        container.removeChild(notification);
+                    }
+                }, 300);
+            }
+        }, 5000);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -400,7 +514,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new ContactApp();
 });
 
-//for debugging purposes
+//For debugging*** 
 function testLocalStorage(): boolean {
     try {
         localStorage.setItem('test', 'test');

@@ -75,7 +75,7 @@
         </main>
 
         <footer>
-            <p>&copy; 2025 Contact Manager | Created with <ion-icon name="heart" class="heart-icon"></ion-icon></p>
+            <p>&copy; 2025 Contact Manager | Created by Mel</p>
         </footer>
     </div>
     
@@ -95,6 +95,28 @@
             </div>
         </div>
     </template>
+
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><ion-icon name="warning"></ion-icon> Confirm Deletion</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this contact?</p>
+                <p class="contact-to-delete"></p>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-delete" class="btn btn-cancel">
+                    <ion-icon name="close-circle"></ion-icon> Cancel
+                </button>
+                <button id="confirm-delete" class="btn btn-delete">
+                    <ion-icon name="trash"></ion-icon> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-container"></div>
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
