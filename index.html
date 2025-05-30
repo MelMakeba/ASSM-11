@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo">
+                <ion-icon name="book"></ion-icon>
+                <h1>Contact Manager</h1>
+            </div>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search contacts...">
+                <button id="search-btn"><ion-icon name="search"></ion-icon></button>
+            </div>
+        </header>
+
+        <main>
+            <section class="form-section">
+                <div class="card">
+                    <h2><ion-icon name="person-add"></ion-icon> Add New Contact</h2>
+                    <form id="contact-form">
+                        <input type="hidden" id="contact-id" />
+                        <div class="form-group">
+                            <label for="name"><ion-icon name="person"></ion-icon> Name</label>
+                            <input type="text" id="name" required placeholder="Full name" />
+                        </div>
+                        <div class="form-group">
+                            <label for="email"><ion-icon name="mail"></ion-icon> Email</label>
+                            <input type="email" id="email" required placeholder="email@example.com" />
+                        </div>
+                        <div class="form-group">
+                            <label for="phone"><ion-icon name="call"></ion-icon> Phone</label>
+                            <input type="tel" id="phone" required placeholder="+1 (123) 456-7890" />
+                        </div>
+                        <div class="button-group">
+                            <button type="submit" class="btn btn-add">
+                                <ion-icon name="add-circle"></ion-icon> Add Contact
+                            </button>
+                            <button type="button" id="update-button" class="btn btn-update" style="display:none;">
+                                <ion-icon name="save"></ion-icon> Update Contact
+                            </button>
+                            <button type="button" id="cancel-button" class="btn btn-cancel" style="display:none;">
+                                <ion-icon name="close-circle"></ion-icon> Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="contacts-section">
+                <div class="card">
+                    <div class="section-header">
+                        <h2><ion-icon name="list"></ion-icon> Contact List</h2>
+                        <div class="view-options">
+                            <span id="grid-view" class="active"><ion-icon name="grid"></ion-icon></span>
+                            <span id="list-view"><ion-icon name="list"></ion-icon></span>
+                        </div>
+                    </div>
+                    <div class="contacts-stats">
+                        <span id="contact-count">0 contacts</span>
+                    </div>
+                    <div id="contact-list" class="contact-grid"></div>
+                    <div id="no-contacts" class="empty-state">
+                        <ion-icon name="card"></ion-icon>
+                        <p>No contacts found. Add your first contact!</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Contact Manager | Created with <ion-icon name="heart" class="heart-icon"></ion-icon></p>
+        </footer>
+    </div>
+    
+    <template id="contact-card-template">
+        <div class="contact-card" data-id="">
+            <div class="contact-avatar">
+                <span class="initials"></span>
+            </div>
+            <div class="contact-info">
+                <h3 class="contact-name"></h3>
+                <p class="contact-email"><ion-icon name="mail"></ion-icon> <span></span></p>
+                <p class="contact-phone"><ion-icon name="call"></ion-icon> <span></span></p>
+            </div>
+            <div class="contact-actions">
+                <button class="btn-edit"><ion-icon name="create"></ion-icon></button>
+                <button class="btn-delete"><ion-icon name="trash"></ion-icon></button>
+            </div>
+        </div>
+    </template>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    
+    <script src="dist/app.js"></script>
+</body>
+</html>
